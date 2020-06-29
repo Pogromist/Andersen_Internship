@@ -3,25 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textViewProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:text="Progress bar fragment"/>
-
     <Button
         android:id="@+id/btnAddProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Progress Bar"
-        android:layout_below="@+id/textViewProgressBar"/>
+        android:text="Add Progress Bar" />
+
+    <Button
+        android:id="@+id/btnAsyncTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnAddProgressBar"
+        android:text="Async Task" />
+
+    <Button
+        android:id="@+id/btnLoader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btnAsyncTask"
+        android:layout_below="@+id/btnAddProgressBar"
+        android:text="Loader" />
+
+    <Button
+        android:id="@+id/btnService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btnLoader"
+        android:layout_below="@+id/btnAddProgressBar"
+        android:text="Service" />
+
+    <Button
+        android:id="@+id/btnHandler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btnService"
+        android:layout_below="@+id/btnAddProgressBar"
+        android:text="Handler" />
+
+    <ProgressBar
+        android:id="@+id/progressBarAsync"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnAsyncTask" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewProgressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/btnAddProgressBar">
+        android:layout_below="@+id/progressBarAsync">
 
     </androidx.recyclerview.widget.RecyclerView>
 
