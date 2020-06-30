@@ -8,15 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager
+import androidx.loader.content.Loader
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_progressbar.*
 import java.lang.Thread.sleep
 
-class ProgressBarFragment : Fragment() {
+class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
     var itemList = ArrayList<ProgressModel>()
     val progressAdapter: ProgressAdapter = ProgressAdapter(itemList)
     var count = 0
+    var flagLoader = false
+    val LOADER_ID = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +45,10 @@ class ProgressBarFragment : Fragment() {
             MyAsyncTask().execute()
         }
         btnLoader.setOnClickListener {
+            if (flagLoader)
+                LoaderManager.getInstance(this).initLoader(LOADER_ID,null,this)
+            else
+                LoaderManager.getInstance(this).restartLoader(LOADER_ID,null,this)
         }
         btnService.setOnClickListener {
         }
@@ -77,4 +85,19 @@ class ProgressBarFragment : Fragment() {
             Toast.makeText(context, "Task Completed", LENGTH_SHORT).show()
         }
     }
+
+    //AsyncTask Loader
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Void> {
+        progressBarAsync.isIndeterminate = true
+        return MyLoader(this.requireContext())
+    }
+
+    override fun onLoadFinished(loader: Loader<Void>, data: Void?) {
+        progressBarAsync.isIndeterminate = false
+        progressBarAsync.progress = 100
+        Toast.makeText(context, "Loader Finished", LENGTH_SHORT).show()
+    }
+
+    override fun onLoaderReset(loader: Loader<Void>) {}
 }
