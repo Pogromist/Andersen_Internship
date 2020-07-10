@@ -20,14 +20,12 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     val progressAdapter: ProgressAdapter = ProgressAdapter(itemList)
     var count = 0
     var flagLoader = false
-    val LOADER_ID = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_progressbar, container, false)
     }
 
@@ -46,13 +44,16 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         }
         btnLoader.setOnClickListener {
             if (flagLoader)
-                LoaderManager.getInstance(this).initLoader(LOADER_ID,null,this)
+                LoaderManager.getInstance(this).initLoader(1, null, this)
             else
-                LoaderManager.getInstance(this).restartLoader(LOADER_ID,null,this)
+                LoaderManager.getInstance(this).restartLoader(1, null, this)
         }
         btnService.setOnClickListener {
+
         }
+
         btnHandler.setOnClickListener {
+
         }
     }
 
@@ -89,15 +90,14 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     //AsyncTask Loader
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Void> {
-        progressBarAsync.isIndeterminate = true
-        return MyLoader(this.requireContext())
+        Toast.makeText(context, "Loader Start", LENGTH_SHORT).show()
+        return MyLoader(this.requireContext(), this)
     }
 
     override fun onLoadFinished(loader: Loader<Void>, data: Void?) {
-        progressBarAsync.isIndeterminate = false
-        progressBarAsync.progress = 100
         Toast.makeText(context, "Loader Finished", LENGTH_SHORT).show()
     }
 
     override fun onLoaderReset(loader: Loader<Void>) {}
+
 }
