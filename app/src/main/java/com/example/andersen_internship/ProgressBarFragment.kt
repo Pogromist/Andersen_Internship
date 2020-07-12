@@ -1,9 +1,7 @@
 package com.example.andersen_internship
 
-import android.os.AsyncTask
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.annotation.SuppressLint
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +20,11 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     val progressAdapter: ProgressAdapter = ProgressAdapter(itemList)
     var count = 0
     var flagLoader = false
+
     var myHandler = Handler()
+
+    var myHandlerThread = MyHandlerThread()
+    var handler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,11 +40,24 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         progressAdapter.progressModelList = itemList
         recyclerViewProgressBar.adapter = progressAdapter
 
-        myHandler = object : Handler() {
+        myHandler = @SuppressLint("HandlerLeak")
+        object : Handler() {
             override fun handleMessage(msg: Message) {
                 progressBarAsync.progress = msg.what
             }
         }
+
+        var myRunnable = Runnable {
+            for (i in 0..100) {
+                sleep(5)
+                handler.post(Runnable {
+                    progressBarAsync.progress = i
+                })
+            }
+        }
+
+        myHandlerThread.start()
+        myHandlerThread.prepareHandler()
 
         btnAddProgressBar.setOnClickListener {
             count++
@@ -62,7 +77,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         }
 
         btnHandler.setOnClickListener {
-
+            myHandlerThread.postTask(myRunnable)
         }
     }
 
