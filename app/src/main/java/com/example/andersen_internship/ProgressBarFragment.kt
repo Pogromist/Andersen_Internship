@@ -2,6 +2,8 @@ package com.example.andersen_internship
 
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     val progressAdapter: ProgressAdapter = ProgressAdapter(itemList)
     var count = 0
     var flagLoader = false
+    var myHandler = Handler()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +37,12 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         recyclerViewProgressBar.layoutManager = LinearLayoutManager(this.context)
         progressAdapter.progressModelList = itemList
         recyclerViewProgressBar.adapter = progressAdapter
+
+        myHandler = object : Handler() {
+            override fun handleMessage(msg: Message) {
+                progressBarAsync.progress = msg.what
+            }
+        }
 
         btnAddProgressBar.setOnClickListener {
             count++
@@ -56,6 +65,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
         }
     }
+
 
     private fun addData() {
         itemList.add(ProgressModel(R.id.progressBar))
@@ -91,7 +101,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Void> {
         Toast.makeText(context, "Loader Start", LENGTH_SHORT).show()
-        return MyLoader(this.requireContext(), this)
+        return MyLoader(this.requireContext(), myHandler)
     }
 
     override fun onLoadFinished(loader: Loader<Void>, data: Void?) {

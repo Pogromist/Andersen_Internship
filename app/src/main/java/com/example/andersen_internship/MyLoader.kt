@@ -10,8 +10,7 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.loader.content.AsyncTaskLoader
 import kotlinx.android.synthetic.main.fragment_progressbar.*
 
-class MyLoader(context: Context, var progressBarFragment: ProgressBarFragment) : AsyncTaskLoader<Void>(context) {
-    private var count = 0
+class MyLoader(context: Context, var myHandler: Handler) : AsyncTaskLoader<Void>(context) {
 
     override fun onStartLoading() {
         Toast.makeText(context, "Loader starting", LENGTH_SHORT).show()
@@ -19,10 +18,10 @@ class MyLoader(context: Context, var progressBarFragment: ProgressBarFragment) :
     }
 
     override fun loadInBackground(): Void? {
-        progressBarFragment.progressBarAsync.progress = 0
+        var count = 0
         while (count < 100) {
             count++
-            progressBarFragment.progressBarAsync.progress++
+            myHandler.sendEmptyMessage(count)
             Thread.sleep(5)
         }
         return null
