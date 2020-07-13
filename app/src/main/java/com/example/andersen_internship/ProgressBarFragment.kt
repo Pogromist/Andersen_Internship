@@ -70,6 +70,8 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
         //register BroadcastManager for Service
         LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter("intentKey"));
+        //register BroadcastManager for IntentService
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiverIntentService!!,  IntentFilter("updateIntentKey"));
 
         btnAddProgressBar.setOnClickListener {
             count++
@@ -86,6 +88,11 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         }
         btnService.setOnClickListener {
             val intent = Intent(context, MyService::class.java)
+            context?.startService(intent)
+        }
+
+        btnIntentService.setOnClickListener {
+            val intent = Intent(context, MyIntentService::class.java)
             context?.startService(intent)
         }
 
@@ -141,6 +148,14 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     private var messageReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val message = intent.getIntExtra("key", 100)
+            progressBarAsync.progress = message
+        }
+    }
+
+    // IntentService messageReceiver
+    private var messageReceiverIntentService: BroadcastReceiver? = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val message = intent.getIntExtra("IntentService", 0)
             progressBarAsync.progress = message
         }
     }

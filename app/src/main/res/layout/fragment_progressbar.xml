@@ -10,10 +10,17 @@
         android:text="Add Progress Bar" />
 
     <Button
+        android:id="@+id/btnIntentService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Intent Service"
+        android:layout_toRightOf="@id/btnAddProgressBar"/>
+
+    <Button
         android:id="@+id/btnAsyncTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnAddProgressBar"
+        android:layout_below="@id/btnAddProgressBar"
         android:text="Async Task" />
 
     <Button
@@ -21,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/btnAsyncTask"
-        android:layout_below="@+id/btnAddProgressBar"
+        android:layout_below="@id/btnAddProgressBar"
         android:text="Loader" />
 
     <Button
@@ -29,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/btnLoader"
-        android:layout_below="@+id/btnAddProgressBar"
+        android:layout_below="@id/btnAddProgressBar"
         android:text="Service" />
 
     <Button
@@ -37,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/btnService"
-        android:layout_below="@+id/btnAddProgressBar"
+        android:layout_below="@id/btnAddProgressBar"
         android:text="Handler" />
 
     <ProgressBar
