@@ -1,7 +1,14 @@
 package com.example.andersen_internship
 
 import android.annotation.SuppressLint
-import android.os.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.AsyncTask
+import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +17,11 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_progressbar.*
 import java.lang.Thread.sleep
+
 
 class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
@@ -47,7 +56,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
             }
         }
 
-        var myRunnable = Runnable {
+        val myRunnable = Runnable {
             for (i in 0..100) {
                 sleep(5)
                 handler.post(Runnable {
@@ -58,6 +67,9 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
         myHandlerThread.start()
         myHandlerThread.prepareHandler()
+
+        //register BroadcastManager for Service
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter("intentKey"));
 
         btnAddProgressBar.setOnClickListener {
             count++
@@ -73,7 +85,8 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
                 LoaderManager.getInstance(this).restartLoader(1, null, this)
         }
         btnService.setOnClickListener {
-
+            val intent = Intent(context, MyService::class.java)
+            context?.startService(intent)
         }
 
         btnHandler.setOnClickListener {
@@ -113,7 +126,6 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     }
 
     //AsyncTask Loader
-
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<Void> {
         Toast.makeText(context, "Loader Start", LENGTH_SHORT).show()
         return MyLoader(this.requireContext(), myHandler)
@@ -125,4 +137,11 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
 
     override fun onLoaderReset(loader: Loader<Void>) {}
 
+    // Service messageReceiver
+    private var messageReceiver: BroadcastReceiver? = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val message = intent.getIntExtra("key", 100)
+            progressBarAsync.progress = message
+        }
+    }
 }
