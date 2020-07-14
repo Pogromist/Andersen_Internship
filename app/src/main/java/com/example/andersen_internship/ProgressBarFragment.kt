@@ -35,12 +35,23 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     var myHandlerThread = MyHandlerThread()
     var handler = Handler()
 
+    companion object {
+        const val INTENT_KEY = "intentKey"
+        const val UPDATE_INTENT_KEY = "updateIntentKey"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_progressbar, container, false)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        LocalBroadcastManager.getInstance(this.requireContext()).unregisterReceiver(messageReceiver!!)
+        LocalBroadcastManager.getInstance(this.requireContext()).unregisterReceiver(messageReceiverIntentService!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,9 +80,9 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         myHandlerThread.prepareHandler()
 
         //register BroadcastManager for Service
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter("intentKey"));
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter(INTENT_KEY));
         //register BroadcastManager for IntentService
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiverIntentService!!,  IntentFilter("updateIntentKey"));
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiverIntentService!!,  IntentFilter(UPDATE_INTENT_KEY));
 
         btnAddProgressBar.setOnClickListener {
             count++

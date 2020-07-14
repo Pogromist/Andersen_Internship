@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.andersen_internship.ProgressBarFragment.Companion.INTENT_KEY
 import java.lang.Thread.sleep
 
 
@@ -34,7 +35,7 @@ class MyService() : Service() {
     }
 
     private fun sendMessageToActivity(msg: Int) {
-        val intent = Intent("intentKey")
+        val intent = Intent(INTENT_KEY)
         intent.putExtra("key", msg)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
