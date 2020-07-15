@@ -1,42 +1,46 @@
 package com.example.andersen_internship
 
-import android.app.Application
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.core.app.NotificationCompat
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.FragmentActivity
 
-class MyNotification() : Application() {
-
-    val CHANNEL_ID = "com.example.andersen_internship.channel1"
-
-    override fun onCreate() {
-        super.onCreate()
-        createNotificationChannel(CHANNEL_ID, "My channel", "Description of my channel")
-    }
-
-    private fun createNotificationChannel(id: String, name: String, channelDescription: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(id, name, importance).apply {
-                description = channelDescription
-            }
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+class MyNotification private constructor() {
+    private lateinit var context: Context
+    fun init(context: Context) {
+        if (context == null) {
+            this.context = context
         }
     }
 
-    fun displayNotification(context: Context, notificationManager: NotificationManager) {
-        val notificationId = 1
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("Notification")
-            .setContentText("Description of notification")
-            .setSmallIcon(R.drawable.ic_favorite_black)
-            .setAutoCancel(true)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
-        notificationManager.notify(notificationId, notification)
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    fun notification(fragmentActivity: FragmentActivity) {
+        val notif =
+            fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val androidChannel = NotificationChannel(
+            ANDROID_CHANNEL_ID,
+            "Notification Channel", NotificationManager.IMPORTANCE_DEFAULT
+        )
+        androidChannel.enableLights(true)
+        androidChannel.enableVibration(true)
+        notif.createNotificationChannel(androidChannel)
+        var notify: Notification? = null
+        notify =
+            Notification.Builder(fragmentActivity, ANDROID_CHANNEL_ID).setContentTitle("Notification")
+                .setContentText("Sample Text").setContentTitle("Sample Subject")
+                .setSmallIcon(R.mipmap.ic_launcher).build()
+        notif.notify(0, notify)
+    }
+
+    companion object {
+        val ANDROID_CHANNEL_ID = "com.example.andersen_internship"
+        @get:Synchronized
+        val instance = MyNotification()
+        fun get(): Context {
+            return instance.context
+        }
     }
 }

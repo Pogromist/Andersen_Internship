@@ -1,17 +1,17 @@
 package com.example.andersen_internship
 
-import android.app.NotificationManager
-import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
 
-    private lateinit var notificationManager: NotificationManager
+    lateinit var myNotification: MyNotification
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,12 +21,16 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        notificationManager = requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        myNotification = MyNotification.instance
+        myNotification.init(requireContext())
+
         btnShowNotification.setOnClickListener {
-            MyNotification().displayNotification(requireContext(), notificationManager)
+            myNotification.notification(requireActivity())
         }
     }
 }
+
 
 
