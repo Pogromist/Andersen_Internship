@@ -5,15 +5,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.AsyncTask
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
@@ -35,6 +33,8 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
     var myHandlerThread = MyHandlerThread()
     var handler = Handler()
 
+    lateinit var serviceNotification: MyNotification
+
     companion object {
         const val INTENT_KEY = "intentKey"
         const val UPDATE_INTENT_KEY = "updateIntentKey"
@@ -54,11 +54,15 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         LocalBroadcastManager.getInstance(this.requireContext()).unregisterReceiver(messageReceiverIntentService!!)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         recyclerViewProgressBar.layoutManager = LinearLayoutManager(this.context)
         progressAdapter.progressModelList = itemList
         recyclerViewProgressBar.adapter = progressAdapter
+
+        serviceNotification = MyNotification.instance
+        serviceNotification.init(requireContext())
 
         myHandler = @SuppressLint("HandlerLeak")
         object : Handler() {
@@ -80,9 +84,9 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         myHandlerThread.prepareHandler()
 
         //register BroadcastManager for Service
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter(INTENT_KEY));
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiver!!,  IntentFilter(INTENT_KEY))
         //register BroadcastManager for IntentService
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiverIntentService!!,  IntentFilter(UPDATE_INTENT_KEY));
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(messageReceiverIntentService!!,  IntentFilter(UPDATE_INTENT_KEY))
 
         btnAddProgressBar.setOnClickListener {
             count++
