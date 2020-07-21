@@ -1,5 +1,6 @@
 package com.example.andersen_internship
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -31,5 +32,15 @@ class MainActivity : AppCompatActivity() {
             .beginTransaction()
             .replace(R.id.frameLayout, fragment)
             .commit()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            var data = intent.getStringExtra("data")
+            if (data != null) {
+                replaceFragment(ProgressBarFragment())
+            }
+        }
     }
 }

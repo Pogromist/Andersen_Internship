@@ -54,7 +54,7 @@ class MyService() : Service() {
             .setProgress(100, 0, false)
             .setContentIntent(contentIntent)
 
-        startForeground(1, notification.build())
+        //startForeground(1, notification.build())
 
         for (i in 0..100) {
             sleep(50)
@@ -62,6 +62,7 @@ class MyService() : Service() {
             startForeground(1, notification.build())
             sendMessageToActivity(i)
         }
+        stopSelf()
         showNotification()
     }
 
