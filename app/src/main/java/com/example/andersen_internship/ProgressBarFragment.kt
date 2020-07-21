@@ -103,7 +103,7 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         }
         btnService.setOnClickListener {
             val intent = Intent(context, MyService::class.java)
-            context?.startService(intent)
+            context?.startForegroundService(intent)
         }
 
         btnIntentService.setOnClickListener {

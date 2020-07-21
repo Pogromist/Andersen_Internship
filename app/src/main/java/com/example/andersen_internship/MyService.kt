@@ -8,7 +8,9 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_MIN
+import androidx.fragment.app.FragmentActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.andersen_internship.ProgressBarFragment.Companion.INTENT_KEY
 import java.lang.Thread.sleep
@@ -23,26 +25,16 @@ class MyService() : Service() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        showNotification()
-
         Thread(Runnable {
             loading()
-            stopForeground(true)
             stopSelf()
         }).start()
 
-        return START_STICKY
-    }
-
-    private fun loading() {
-        for (i in 0..100) {
-            sleep(100)
-            sendMessageToActivity(i)
-        }
+        return START_NOT_STICKY
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun showNotification() {
+    private fun loading() {
         val channelId = createNotificationChannel("my_service", "My Background Service")
 
         val intent = Intent(this, MainActivity::class.java)
@@ -52,15 +44,55 @@ class MyService() : Service() {
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
+
         var notification = notificationBuilder.setOngoing(true)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(PRIORITY_MIN)
             .setCategory(Notification.CATEGORY_SERVICE)
+            .setContentTitle("Service notification")
             .setContentText("Running")
+            .setProgress(100, 0, false)
             .setContentIntent(contentIntent)
 
-        startForeground(101, notification.build())
+        startForeground(1, notification.build())
 
+        for (i in 0..100) {
+            sleep(50)
+            notification.setProgress(100, i, false)
+            startForeground(1, notification.build())
+            sendMessageToActivity(i)
+        }
+        showNotification()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun showNotification() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val androidChannel = NotificationChannel(
+            MyNotification.CHANNEL_ID,
+            "Notification Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+        androidChannel.enableLights(true)
+        androidChannel.enableVibration(true)
+        notificationManager.createNotificationChannel(androidChannel)
+
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intent.putExtra("data", "fromoutside")
+        val contentIntent =
+            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        var notification =
+            Notification.Builder(this, MyNotification.CHANNEL_ID)
+                .setContentTitle("Service")
+                .setContentText("Finished")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(contentIntent)
+        notificationManager.notify(0, notification.build())
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
