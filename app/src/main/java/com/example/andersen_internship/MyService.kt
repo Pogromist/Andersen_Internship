@@ -8,9 +8,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationCompat.PRIORITY_DEFAULT
 import androidx.core.app.NotificationCompat.PRIORITY_MIN
-import androidx.fragment.app.FragmentActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.andersen_internship.ProgressBarFragment.Companion.INTENT_KEY
 import java.lang.Thread.sleep
@@ -27,6 +25,7 @@ class MyService() : Service() {
 
         Thread(Runnable {
             loading()
+            stopForeground(true)
             stopSelf()
         }).start()
 
@@ -54,14 +53,13 @@ class MyService() : Service() {
             .setProgress(100, 0, false)
             .setContentIntent(contentIntent)
 
-        //startForeground(1, notification.build())
-
         for (i in 0..100) {
             sleep(50)
             notification.setProgress(100, i, false)
             startForeground(1, notification.build())
             sendMessageToActivity(i)
         }
+        stopForeground(true)
         stopSelf()
         showNotification()
     }

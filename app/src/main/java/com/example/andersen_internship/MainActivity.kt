@@ -12,8 +12,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            replaceFragment(HomeFragment())
+        replaceFragment(HomeFragment())
+
+        var data = intent.getStringExtra("data")
+        if (data != null) {
+            replaceFragment(ProgressBarFragment())
         }
 
         bottom_navigation_menu.setOnNavigationItemSelectedListener { item ->
