@@ -62,7 +62,6 @@ class ProgressBarFragment : Fragment(), LoaderManager.LoaderCallbacks<Void> {
         recyclerViewProgressBar.adapter = progressAdapter
 
         serviceNotification = MyNotification.instance
-        serviceNotification.init(requireContext())
 
         myHandler = @SuppressLint("HandlerLeak")
         object : Handler() {

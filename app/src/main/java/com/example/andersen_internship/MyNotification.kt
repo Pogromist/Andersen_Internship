@@ -11,12 +11,6 @@ class MyNotification private constructor() {
 
     private lateinit var context: Context
 
-    fun init(context: Context) {
-        if (context == null) {
-            this.context = context
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun notification(fragmentActivity: FragmentActivity) {
 
@@ -25,7 +19,7 @@ class MyNotification private constructor() {
 
         val androidChannel = NotificationChannel(
             CHANNEL_ID,
-            "Notification Channel",
+            CHANNEL_NAME,
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
@@ -35,15 +29,18 @@ class MyNotification private constructor() {
 
         var notification =
             Notification.Builder(fragmentActivity, CHANNEL_ID)
-                .setContentTitle("Notification")
-                .setContentText("Sample Text")
+                .setContentTitle(CONTENT_TITLE)
+                .setContentText(CONTENT_TEXT)
                 .setSmallIcon(R.mipmap.ic_launcher)
         notificationManager.notify(0, notification.build())
     }
 
     companion object {
 
-        val CHANNEL_ID = "com.example.andersen_internship"
+        const val CHANNEL_ID = "com.example.andersen_internship"
+        const val CHANNEL_NAME = "Notification Channel"
+        const val CONTENT_TITLE = "Notification"
+        const val CONTENT_TEXT = "Sample Text"
 
         @get:Synchronized
         val instance = MyNotification()
