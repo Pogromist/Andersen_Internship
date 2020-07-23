@@ -24,7 +24,6 @@ class ProfileFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         myNotification = MyNotification.instance
-
         btnShowNotification.setOnClickListener {
             myNotification.notification(requireActivity())
         }

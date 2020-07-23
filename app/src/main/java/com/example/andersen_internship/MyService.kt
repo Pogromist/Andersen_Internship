@@ -17,13 +17,6 @@ import java.lang.Thread.sleep
 class MyService() : Service() {
 
     companion object {
-        const val CHANNEL_ID = "my_service"
-        const val CHANNEL_NAME = "My Background Service"
-        const val INTENT_NAME = "data"
-        const val INTENT_VALUE = "fromoutside"
-        const val CONTENT_TITLE = "Service notification"
-        const val CONTENT_TEXT_RUNNING = "Running"
-        const val CONTENT_TEXT_FINISH = "Finished"
         const val PROGRESS_MAX = 100
     }
 
@@ -43,11 +36,11 @@ class MyService() : Service() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loading() {
-        val channelId = createNotificationChannel(CHANNEL_ID, CHANNEL_NAME)
+        val channelId = createNotificationChannel(getString(R.string.channel_id), getString(R.string.channel_name))
 
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        intent.putExtra(INTENT_NAME, INTENT_VALUE)
+        intent.putExtra(getString(R.string.intent_name), getString(R.string.intent_value))
         val contentIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -57,8 +50,8 @@ class MyService() : Service() {
             .setSmallIcon(R.mipmap.ic_launcher)
             .setPriority(PRIORITY_MIN)
             .setCategory(Notification.CATEGORY_SERVICE)
-            .setContentTitle(CONTENT_TITLE)
-            .setContentText(CONTENT_TEXT_RUNNING)
+            .setContentTitle(getString(R.string.content_title))
+            .setContentText(getString(R.string.content_text_running))
             .setProgress(PROGRESS_MAX, 0, false)
             .setContentIntent(contentIntent)
 
@@ -80,14 +73,14 @@ class MyService() : Service() {
 
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
-        intent.putExtra(INTENT_NAME, INTENT_VALUE)
+        intent.putExtra(getString(R.string.intent_name), getString(R.string.intent_value))
         val contentIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         var notification =
             Notification.Builder(this, MyNotification.CHANNEL_ID)
-                .setContentTitle(CONTENT_TITLE)
-                .setContentText(CONTENT_TEXT_FINISH)
+                .setContentTitle(getString(R.string.content_title))
+                .setContentText(getString(R.string.content_text_finish))
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(contentIntent)
         notificationManager.notify(0, notification.build())
