@@ -10,4 +10,5 @@
     <string name="content_title">Service notification</string>
     <string name="content_text_running">Running</string>
     <string name="content_text_finish">Finished</string>
+    <string name="api_key">64ac240467d951534204077710b3c8b6</string>
 </resources>

@@ -16,5 +16,12 @@
         android:layout_height="wrap_content"
         android:text="Show Notification" />
 
+    <Button
+        android:id="@+id/btnRetrofitRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Retrofit request"
+        android:layout_toRightOf="@id/btnShowNotification"/>
+
 
 </RelativeLayout>
