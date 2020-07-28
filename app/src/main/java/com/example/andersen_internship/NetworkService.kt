@@ -12,17 +12,18 @@ class NetworkService private constructor(){
 
     companion object {
         val instance: NetworkService by lazy { HOLDER.INSTANCE }
+        const val BASE_URL = "https://api.themoviedb.org/"
     }
 
     private val client = OkHttpClient.Builder().build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.themoviedb.org/")
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()
 
-    fun Api(): TmdbEndpoints? {
+    fun Api(): TmdbEndpoints {
         return retrofit.create(TmdbEndpoints::class.java)
     }
 }
