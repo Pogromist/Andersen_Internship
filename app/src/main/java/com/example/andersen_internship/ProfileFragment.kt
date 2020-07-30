@@ -28,40 +28,19 @@ class ProfileFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
-
         myNotification = MyNotification.instance
+
         btnShowNotification.setOnClickListener {
             myNotification.notification(requireActivity())
         }
 
         btnRetrofitRequest.setOnClickListener {
-
-            //MoviesInteractor.instance.getMovies(requireContext())
-
             val compositeDisposable = CompositeDisposable()
             compositeDisposable.add(
                 NetworkService.buildService().getMovies(getString(R.string.api_key))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({response -> onResponse(response)}, {t -> onFailure(t) }))
-
-
-
-            /*?.enqueue(object : Callback<PopularMovies> {
-                override fun onFailure(call: Call<PopularMovies>, t: Throwable) {
-                    Toast.makeText(context, "onFailure", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onResponse(
-                    call: Call<PopularMovies>,
-                    response: Response<PopularMovies>
-                ) {
-                    if (response.isSuccessful) {
-                        Toast.makeText(context, "Success request", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            })*/
         }
 
     }
