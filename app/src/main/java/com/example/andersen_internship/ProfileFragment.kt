@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 class ProfileFragment : Fragment() {
 
     lateinit var myNotification: MyNotification
+    val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,15 +36,21 @@ class ProfileFragment : Fragment() {
         }
 
         btnRetrofitRequest.setOnClickListener {
-            val compositeDisposable = CompositeDisposable()
             compositeDisposable.add(
                 NetworkService.buildService().getMovies(getString(R.string.api_key))
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe({response -> onResponse(response)}, {t -> onFailure(t) }))
+                    .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
+            )
         }
 
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        compositeDisposable.dispose()
+    }
+
     private fun onFailure(t: Throwable) {
         Toast.makeText(context, "onFailure", Toast.LENGTH_SHORT).show()
     }
