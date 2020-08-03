@@ -7,16 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
+import com.example.andersen_internship.mvp.ProfilePresenter
+import com.example.andersen_internship.mvp.ProfileView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_profile.*
+import moxy.MvpAppCompatFragment
+import moxy.presenter.InjectPresenter
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : MvpAppCompatFragment(), ProfileView {
+
+    @InjectPresenter
+    lateinit var profilePresenter: ProfilePresenter
 
     lateinit var myNotification: MyNotification
-    val compositeDisposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,16 +38,11 @@ class ProfileFragment : Fragment() {
         myNotification = MyNotification.instance
 
         btnShowNotification.setOnClickListener {
-            myNotification.notification(requireActivity())
+           profilePresenter.onNotificationClick()
         }
 
         btnRetrofitRequest.setOnClickListener {
-            compositeDisposable.add(
-                NetworkService.buildService().getMovies(getString(R.string.api_key))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
-            )
+            profilePresenter.onRetrofitRequestClick()
         }
 
     }
@@ -57,6 +58,20 @@ class ProfileFragment : Fragment() {
 
     private fun onResponse(response: PopularMovies) {
         Toast.makeText(context, "Success request", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun retrofitRequest() {
+        compositeDisposable.add(
+            NetworkService.buildService().getMovies(getString(R.string.api_key))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ response -> onResponse(response) }, { t -> onFailure(t) })
+        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun notification() {
+        myNotification.notification(requireActivity())
     }
 }
 
