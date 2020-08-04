@@ -8,7 +8,7 @@ import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(value = AddToEndSingleStrategy::class)
 interface ProfileView : MvpView {
-    fun loadingMovies(data: PopularMovies)
+    fun showMovies(data: PopularMovies)
     fun onFailure()
     fun showNotification(activity: FragmentActivity)
 }

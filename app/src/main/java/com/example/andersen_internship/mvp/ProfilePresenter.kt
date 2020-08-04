@@ -16,15 +16,14 @@ import moxy.MvpPresenter
 @InjectViewState
 class ProfilePresenter : MvpPresenter<ProfileView>() {
 
-    private val compositeDisposable = CompositeDisposable()
     lateinit var data: PopularMovies
 
-    fun loadMovies(context: Context) {
+    fun loadingMovies(context: Context, compositeDisposable: CompositeDisposable) {
         compositeDisposable.add(
             NetworkService.buildService().getMovies(context.getString(R.string.api_key))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({data -> viewState.loadingMovies(data) }, { viewState.onFailure() })
+                .subscribe({data -> viewState.showMovies(data) }, { viewState.onFailure() })
         )
     }
 

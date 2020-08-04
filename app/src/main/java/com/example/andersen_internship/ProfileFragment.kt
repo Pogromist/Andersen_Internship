@@ -1,6 +1,5 @@
 package com.example.andersen_internship
 
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,7 +39,7 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
         }
 
         btnRetrofitRequest.setOnClickListener {
-            profilePresenter.loadMovies(requireContext())
+            profilePresenter.loadingMovies(requireContext(), compositeDisposable)
         }
     }
 
@@ -49,7 +48,7 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
         compositeDisposable.dispose()
     }
 
-    override fun loadingMovies(data: PopularMovies) {
+    override fun showMovies(data: PopularMovies) {
         Toast.makeText(context, "Success request", Toast.LENGTH_SHORT).show()
     }
 
