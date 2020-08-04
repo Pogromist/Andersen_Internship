@@ -5,7 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
 import com.example.andersen_internship.NetworkService
-import com.example.andersen_internship.PopularMovies
 import com.example.andersen_internship.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -16,15 +15,20 @@ import moxy.MvpPresenter
 @InjectViewState
 class ProfilePresenter : MvpPresenter<ProfileView>() {
 
-    lateinit var data: PopularMovies
+    private var compositeDisposable = CompositeDisposable()
 
-    fun loadingMovies(context: Context, compositeDisposable: CompositeDisposable) {
+    fun loadingMovies(context: Context) {
         compositeDisposable.add(
             NetworkService.buildService().getMovies(context.getString(R.string.api_key))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({data -> viewState.showMovies(data) }, { viewState.onFailure() })
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

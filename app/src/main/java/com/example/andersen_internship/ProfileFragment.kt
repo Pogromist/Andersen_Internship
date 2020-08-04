@@ -19,8 +19,6 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
-
-    private val compositeDisposable = CompositeDisposable()
     private var myNotification = MyNotification.instance
 
     override fun onCreateView(
@@ -39,13 +37,8 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
         }
 
         btnRetrofitRequest.setOnClickListener {
-            profilePresenter.loadingMovies(requireContext(), compositeDisposable)
+            profilePresenter.loadingMovies(requireContext())
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        compositeDisposable.dispose()
     }
 
     override fun showMovies(data: PopularMovies) {
