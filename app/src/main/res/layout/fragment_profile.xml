@@ -23,5 +23,27 @@
         android:text="Retrofit request"
         android:layout_toRightOf="@id/btnShowNotification"/>
 
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:layout_below="@id/btnRetrofitRequest"/>
+
+    <Button
+        android:id="@+id/btnGet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get"
+        android:layout_below="@id/btnRetrofitRequest"
+        android:layout_toRightOf="@id/btnAdd"/>
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_below="@id/btnRetrofitRequest"
+        android:layout_toRightOf="@id/btnGet"/>
+
 
 </RelativeLayout>

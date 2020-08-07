@@ -22,7 +22,7 @@ class ProfilePresenter : MvpPresenter<ProfileView>() {
             NetworkService.buildService().getMovies(context.getString(R.string.api_key))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({data -> viewState.showMovies(data) }, { viewState.onFailure() })
+                .subscribe({ data -> viewState.showMovies(data) }, { viewState.onFailure() })
         )
     }
 
