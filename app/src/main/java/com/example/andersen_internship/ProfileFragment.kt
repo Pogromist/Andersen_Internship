@@ -1,6 +1,5 @@
 package com.example.andersen_internship
 
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,25 +8,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.FragmentActivity
-import androidx.room.Room
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.andersen_internship.mvp.ProfilePresenter
 import com.example.andersen_internship.mvp.ProfileView
-import com.example.andersen_internship.roomdatabase.Collection
-import com.example.andersen_internship.roomdatabase.MovieDao
+import com.example.andersen_internship.roomdatabase.MainViewModel
+import com.example.andersen_internship.roomdatabase.MovieData
+import com.example.andersen_internship.roomdatabase.MovieDataAdapter
 import com.example.andersen_internship.roomdatabase.MovieDatabase
 import kotlinx.android.synthetic.main.fragment_profile.*
 import moxy.MvpAppCompatFragment
 import moxy.presenter.InjectPresenter
-import java.lang.StringBuilder
-import java.util.ArrayList
 
 class ProfileFragment : MvpAppCompatFragment(), ProfileView {
 
     @InjectPresenter
     lateinit var profilePresenter: ProfilePresenter
     private var myNotification = MyNotification.instance
-    lateinit var movieDatabase: MovieDatabase
-    lateinit var movieDao: MovieDao
+    private var viewModel: MainViewModel? = null
+    private var movieAdapter: MovieDataAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,23 +40,11 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        movieDatabase =
-            Room.databaseBuilder(requireContext(), MovieDatabase::class.java, "movie_database")
-                .allowMainThreadQueries()
-                .build()
-        movieDao = movieDatabase.movieDao()
-
-        btnAdd.setOnClickListener {
-            AsyncTaskInsertCollection().execute()
-        }
-
-        btnGet.setOnClickListener {
-            showToast(movieDao.allCollections())
-        }
-
-        btnDelete.setOnClickListener {
-            AsyncTaskDeleteCollection().execute()
-        }
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        var databaseInstance = MovieDatabase.getDatabaseInstance(requireContext())
+        viewModel?.setInstanceOfDb(databaseInstance)
+        initViews()
+        observerViewModel()
 
         btnShowNotification.setOnClickListener {
             profilePresenter.onNotificationClick(requireActivity())
@@ -65,36 +53,59 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
         btnRetrofitRequest.setOnClickListener {
             profilePresenter.loadingMovies(requireContext())
         }
-    }
 
-    private fun showToast(allCollections: List<Collection>) {
-        var builder = StringBuilder()
-        for (element in allCollections)
-            builder.append(element.toString()).append("\n")
+        btnSave.setOnClickListener {
+            saveData()
+        }
 
-        Toast.makeText(requireContext(), builder.toString(), Toast.LENGTH_LONG).show()
-    }
-
-    private fun createCollection(): List<Collection> {
-        var collections: ArrayList<Collection> = ArrayList()
-        for (i in 0..15)
-            collections.add(Collection(i, "collection_$i"))
-        return collections
-    }
-
-    inner class AsyncTaskInsertCollection : AsyncTask<Void, Void, Void>() {
-        override fun doInBackground(vararg params: Void?): Void? {
-            movieDao.insertCollection(createCollection())
-            return null
+        btnGet.setOnClickListener {
+            viewModel?.getMovieData()
         }
     }
 
-    inner class AsyncTaskDeleteCollection : AsyncTask<List<Collection>, Void, Void>() {
-        override fun doInBackground(vararg params: List<Collection>?): Void? {
-            movieDao.deleteCollection(Collection(1, "collection_1"))
-            return null
-        }
+    private fun saveData() {
+        var title = edtTitle.text.trim().toString()
+        var duration = edtDuration.text.trim().toString()
+        edtTitle.setText("")
+        edtDuration.setText("")
+        if (title.isNullOrBlank() || duration.isNullOrBlank()) {
+            Toast.makeText(requireContext(), "Please enter valid details", Toast.LENGTH_LONG).show()
+        } else {
 
+            var person = MovieData(title = title, duration = duration.toInt())
+            viewModel?.saveDataIntoDb(person)
+
+        }
+    }
+
+    private fun initViews() {
+        rvSavedRecords.layoutManager = LinearLayoutManager(requireContext())
+        movieAdapter = MovieDataAdapter() {
+            it.let {
+                viewModel?.deleteMovie(it)
+            }
+        }
+        rvSavedRecords.adapter = movieAdapter
+    }
+
+    private fun observerViewModel() {
+        viewModel?.moviesList?.observe(viewLifecycleOwner, Observer {
+            if (!it.isNullOrEmpty()) {
+                handleData(it)
+            } else {
+                handleZeroCase()
+            }
+        })
+    }
+
+    private fun handleData(data: List<MovieData>) {
+        rvSavedRecords.visibility = View.VISIBLE
+        movieAdapter?.setData(data)
+    }
+
+    private fun handleZeroCase() {
+        rvSavedRecords.visibility = View.GONE
+        Toast.makeText(requireContext(), "No Records Found", Toast.LENGTH_LONG).show()
     }
 
     override fun showMovies(data: PopularMovies) {
