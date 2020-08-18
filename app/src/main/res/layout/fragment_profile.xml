@@ -3,27 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edtTitle"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnSave"
-        android:layout_marginTop="20dp"
-        android:background="@null"
-        android:hint="Movie Title"
-        android:minHeight="30dp" />
-
-    <EditText
-        android:id="@+id/edtDuration"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/edtTitle"
-        android:layout_marginTop="20dp"
-        android:background="@null"
-        android:hint="Duration"
-        android:inputType="number"
-        android:minHeight="30dp"
-        android:paddingTop="10dp" />
+        android:layout_centerInParent="true"
+        android:text="Profile fragment"
+        android:textSize="30sp" />
 
     <Button
         android:id="@+id/btnShowNotification"
@@ -39,25 +24,10 @@
         android:text="Retrofit request" />
 
     <Button
-        android:id="@+id/btnSave"
+        android:id="@+id/btnAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/btnRetrofitRequest"
-        android:text="Save" />
-
-    <Button
-        android:id="@+id/btnGet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/btnSave"
-        android:layout_below="@id/btnShowNotification"
-        android:text="Get" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSavedRecords"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/edtDuration" />
+        android:text="Add and Get from DB" />
 
 </RelativeLayout>
