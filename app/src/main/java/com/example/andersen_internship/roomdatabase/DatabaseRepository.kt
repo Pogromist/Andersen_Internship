@@ -12,7 +12,6 @@ object DatabaseRepository {
     fun buildDatabase(context: Context) {
         movieDatabase =
             Room.databaseBuilder(context, MovieDatabase::class.java, "movie_database")
-                .allowMainThreadQueries()
                 .build()
     }
 

@@ -19,12 +19,13 @@ import moxy.MvpPresenter
 class ProfilePresenter : MvpPresenter<ProfileView>() {
 
     private var compositeDisposable = CompositeDisposable()
+    val movie: ArrayList<Movie> = ArrayList()
 
     fun loadingMovies(context: Context) {
         compositeDisposable.add(
             NetworkService.buildService().getMovies(context.getString(R.string.api_key))
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ data -> viewState.showMovies(data) }, { viewState.onFailure() })
         )
     }
@@ -40,9 +41,7 @@ class ProfilePresenter : MvpPresenter<ProfileView>() {
     }
 
     @SuppressLint("CheckResult")
-    fun getMovieDataFromDatabase(context: Context) {
-
-        val movie: ArrayList<Movie> = ArrayList()
+    fun getMovieDataFromDatabase() {
 
         for (i in 0..9) {
             movie.add(Movie(i, "collection_$i"))
@@ -53,6 +52,14 @@ class ProfilePresenter : MvpPresenter<ProfileView>() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { viewState.showSuccessMessage() }
 
+        DatabaseRepository.getAllMovies()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { viewState.showDatabaseElementsToast(movie) }
+    }
+
+    @SuppressLint("CheckResult")
+    fun getMovies() {
         DatabaseRepository.getAllMovies()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

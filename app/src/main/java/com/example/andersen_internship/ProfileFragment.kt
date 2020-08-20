@@ -36,7 +36,7 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
         DatabaseRepository.buildDatabase(requireContext())
 
         btnAdd.setOnClickListener {
-            profilePresenter.getMovieDataFromDatabase(requireContext())
+            profilePresenter.getMovieDataFromDatabase()
         }
 
         btnShowNotification.setOnClickListener {
@@ -45,6 +45,10 @@ class ProfileFragment : MvpAppCompatFragment(), ProfileView {
 
         btnRetrofitRequest.setOnClickListener {
             profilePresenter.loadingMovies(requireContext())
+        }
+
+        btnGetMovies.setOnClickListener {
+            profilePresenter.getMovies()
         }
     }
 
